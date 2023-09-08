@@ -1,0 +1,5 @@
+package com.keduit.exception;
+
+public class CommonExceptionAdvice {
+
+}
