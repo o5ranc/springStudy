@@ -1,0 +1,15 @@
+INDEX VERSION 1.131
+C:\workspace\workspace_srping\.metadata\.plugins\org.eclipse.jst.jsp.core\jspsearch\86123866.index
+\ex00\src\main\java
+C:\workspace\workspace_srping\.metadata\.plugins\org.eclipse.jst.jsp.core\jspsearch\3804231202.index
+\spro00\src\main\java
+C:\workspace\workspace_srping\.metadata\.plugins\org.eclipse.jst.jsp.core\jspsearch\3437040890.index
+\spro01_test\src\main\java
+C:\workspace\workspace_srping\.metadata\.plugins\org.eclipse.jst.jsp.core\jspsearch\3243291384.index
+\spro01\src\main\java
+C:\workspace\workspace_srping\.metadata\.plugins\org.eclipse.jst.jsp.core\jspsearch\3965198067.index
+\spro01\src\main\java
+C:\workspace\workspace_srping\.metadata\.plugins\org.eclipse.jst.jsp.core\jspsearch\3634701457.index
+\spo00\src\main\java
+C:\workspace\workspace_srping\.metadata\.plugins\org.eclipse.jst.jsp.core\jspsearch\3178133098.index
+\ex00\src\main\java

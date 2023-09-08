@@ -1,0 +1,17 @@
+package com.keduit.domain;
+
+import java.util.Date;
+
+import org.springframework.format.annotation.DateTimeFormat;
+import org.springframework.stereotype.Controller;
+
+import lombok.Data;
+
+@Data
+public class TodoDTO {
+	private String title;
+	
+	// Controller
+	@DateTimeFormat(pattern="yyy/mm/dd")
+	private Date dueDate;
+}

@@ -1,0 +1,18 @@
+package com.keduit.domain;
+
+import java.util.ArrayList;
+import java.util.List;
+
+import lombok.Data;
+
+@Data
+public class SampleDTOList {
+    List<SampleDto> list;
+
+    public SampleDTOList() {
+        List<SampleDto> list = new ArrayList<SampleDto>();
+    }
+
+
+
+}

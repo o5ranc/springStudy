@@ -1,0 +1,6 @@
+package com.keduit.persistence;
+
+@Log4j
+public class DataSourceTest {
+	
+}

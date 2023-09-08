@@ -1,0 +1,5 @@
+package com.keduit.persistence;
+
+public class TimeMapperTests {
+
+}
