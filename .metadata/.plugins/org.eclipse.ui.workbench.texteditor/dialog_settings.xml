@@ -1,35 +1,35 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <section name="Workbench">
 	<section name="org.eclipse.ui.texteditor.FindReplaceDialog">
-		<item key="selection" value="log4j"/>
+		<item key="selection" value="scott"/>
 		<item key="wrap" value="true"/>
 		<item key="casesensitive" value="false"/>
 		<item key="wholeword" value="false"/>
 		<item key="incremental" value="false"/>
 		<item key="isRegEx" value="false"/>
 		<list key="findhistory">
+			<item value="scott"/>
+			<item value="1.8"/>
+			<item value="defendu"/>
+			<item value="test"/>
+			<item value="lombok"/>
+			<item value="hikari"/>
+			<item value="servlet"/>
+			<item value="jdbc"/>
+			<item value="ojdbc"/>
+			<item value="Logging"/>
+			<item value="jstl"/>
+			<item value="ㅓ"/>
+			<item value="2.14.2"/>
 			<item value="sampleDTO"/>
 			<item value="@GetMapping"/>
-			<item value="log4j"/>
-			<item value="myb"/>
-			<item value="mybati"/>
-			<item value="Logging"/>
-			<item value="Log4j"/>
-			<item value="junit"/>
-			<item value="uit"/>
-			<item value="juit"/>
-			<item value="scope"/>
-			<item value="javax.inject"/>
-			<item value="servlet"/>
-			<item value="org"/>
-			<item value="org.srping"/>
 		</list>
 		<list key="replacehistory">
 		</list>
 	</section>
 	<section name="org.eclipse.ui.texteditor.FindReplaceDialog_dialogBounds">
-		<item key="DIALOG_X_ORIGIN" value="1165"/>
-		<item key="DIALOG_Y_ORIGIN" value="477"/>
+		<item key="DIALOG_X_ORIGIN" value="603"/>
+		<item key="DIALOG_Y_ORIGIN" value="618"/>
 		<item key="DIALOG_WIDTH" value="288"/>
 		<item key="DIALOG_HEIGHT" value="391"/>
 		<item key="DIALOG_FONT_NAME" value="1|맑은 고딕|9.0|0|WINDOWS|1|-12|0|0|0|400|0|0|0|1|0|0|0|0|맑은 고딕"/>

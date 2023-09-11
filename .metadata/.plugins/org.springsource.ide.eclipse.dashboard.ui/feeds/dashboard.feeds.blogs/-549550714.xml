@@ -1,4 +1,119 @@
-<?xml version="1.0" encoding="UTF-8"?><rss xmlns:dc="http://purl.org/dc/elements/1.1/" xmlns:content="http://purl.org/rss/1.0/modules/content/" xmlns:atom="http://www.w3.org/2005/Atom" version="2.0"><channel><title><![CDATA[Spring]]></title><description><![CDATA[Level up your Java code and explore what Spring can do for you.]]></description><link>https://spring.io</link><generator>GatsbyJS</generator><lastBuildDate>Thu, 07 Sep 2023 22:57:06 GMT</lastBuildDate><item><title><![CDATA[A Bootiful Podcast:  Spring Security lead Rob Winch]]></title><link>https://spring.io/blog/2023/09/07/a-bootiful-podcast-spring-security-lead-rob-winch</link><guid isPermaLink="true">https://spring.io/blog/2023/09/07/a-bootiful-podcast-spring-security-lead-rob-winch</guid><dc:creator><![CDATA[Josh Long]]></dc:creator><pubDate>Thu, 07 Sep 2023 00:00:00 GMT</pubDate><content:encoded>&lt;p&gt;Hi, Spring fans! Welcome to another installment of a Bootiful Podcast. In this interview, &lt;a href=&quot;https://twitter.com/starbuxman&quot;&gt;Josh Long (@starbuxman)&lt;/a&gt; talks to Spring Security legend and lead &lt;a href=&quot;https://twitter.com/ro_winch&quot;&gt;Rob Winch (@rob_winch)&lt;/a&gt;, recorded live from SpringOne 2023!&lt;/p&gt;
+<?xml version="1.0" encoding="UTF-8"?><rss xmlns:dc="http://purl.org/dc/elements/1.1/" xmlns:content="http://purl.org/rss/1.0/modules/content/" xmlns:atom="http://www.w3.org/2005/Atom" version="2.0"><channel><title><![CDATA[Spring]]></title><description><![CDATA[Level up your Java code and explore what Spring can do for you.]]></description><link>https://spring.io</link><generator>GatsbyJS</generator><lastBuildDate>Sat, 09 Sep 2023 07:27:34 GMT</lastBuildDate><item><title><![CDATA[All together now: Spring Boot 3.2, GraalVM native images, Java 21, and virtual threads with Project Loom, ]]></title><link>https://spring.io/blog/2023/09/09/all-together-now-spring-boot-3-2-graalvm-native-images-java-21-and-virtual</link><guid isPermaLink="true">https://spring.io/blog/2023/09/09/all-together-now-spring-boot-3-2-graalvm-native-images-java-21-and-virtual</guid><dc:creator><![CDATA[Josh Long]]></dc:creator><pubDate>Sat, 09 Sep 2023 00:00:00 GMT</pubDate><content:encoded>&lt;p&gt;This has been a very long time in coming, but finally we can create GraalVM native images that use Spring Boot (via Spring Boot 3.2) and Java 21&apos;s virtual threads (Project Loom)!&lt;/p&gt;
+&lt;p&gt;Why does all this matter? Each of these individual things, Project Loom, and GraalVM native images, offer compelling runtime characteristics. I&apos;ve waited so very long for these to converge! Let&apos;s talk about them each in turn.&lt;/p&gt;
+&lt;h2&gt;GraalVM Native Images&lt;/h2&gt;
+&lt;p&gt;GraalVM is an OpenJDk distribution that provides some extra utilities, including a utility called &lt;code&gt;native-image&lt;/code&gt; that does ahead-of-time (AOT) compilation on your code. We&apos;re not going to get into all of its utility here, but basically it takes your code, throws away stuff that you don&apos;t need, and then compiles the rest into blazing-fast, operating-system and architecture specific native code. The results are breathtaking, akin to what you&apos;d get if you compiled a C or Go program, for example. The resulting binaries start up in no time at all and take a lot less RAM at runtime. Imagine being able to deploy an existing Spring Boot application and have it take tens, not hundreds, of megabytes of RAM and startup in a few hundred milliseconds. Now you can. Just run &lt;code&gt;./gradlew nativeCompile&lt;/code&gt; or &lt;code&gt;./mvnw -Pnative native:compile&lt;/code&gt; and stand back. Spring Boot has supported GraalVM native images in production since Spring Boot 3.0 came out in November of 2022.&lt;/p&gt;
+&lt;h2&gt;Project Loom&lt;/h2&gt;
+&lt;p&gt;Project Loom brings transparent fibers to the JVM. As things stand today, in Java 20 or earlier, IO is &lt;em&gt;blocking&lt;/em&gt;. Call &lt;code&gt;int InputStream#read()&lt;/code&gt; and you might have to wait for the next byte to finally arrive. In &lt;code&gt;java.io.File&lt;/code&gt; IO, there&apos;s very rarely much of a delay. On the network, however, you just don&apos;t really ever know. Clients might disconnect. Clients might be going through a tunnel. Again, it&apos;s just very hard to say. During this time, the program flow is said to be &lt;em&gt;blocked&lt;/em&gt; from proceeding on the thread of execution. In the following snippet, we have no way of knowing when we&apos;ll see the word &lt;code&gt;after&lt;/code&gt; printed. Might be a nanosecond from now. Might be a week from now. It&apos;s &lt;em&gt;blocking&lt;/em&gt;.&lt;/p&gt;
+&lt;pre&gt;&lt;code class=&quot;language-java&quot;&gt;InputStream in = ... 
+System.out.println(&quot;before&quot;);
+int next = in.read(); 
+System.out.println(&quot;after&quot;);
+&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;This is bad enough, but it&apos;s made worse by the current architecture of threading in Java prior to Java 21. Presently, each thread maps, more or less, to a native operating system thread. It&apos;s expensive to create more threads, too, taking about two megabytes of RAM.&lt;/p&gt;
+&lt;p&gt;There are ways around this, of course. You could use non-blocking IO, as enabled by Java NIO (&lt;code&gt;java.nio.\*&lt;/code&gt;). In this model, you ask for bytes and register a callback that executes only when there are actually bytes available. No waiting, no blocking. This approach has the significant benefit of keeping us off threads when there&apos;s nothing to be done, allowing others to use those threads in the meantime. It&apos;s a bit tedious, however, and low-level. Spring has amazing support for reactive programming, which offers a functional-style programming model on top of non-blocking IO. It works well. But, it requires changing the way you write code. Wouldn&apos;t it be nice if you could just take that existing code, as demonstrated above, and have it do the right thing, transparently moving the flow of execution off the thread when there&apos;s nothing happening, and then resuming the flow of execution when there is? Absolutely it would. That&apos;s the promise of Project Loom. Take the code above, and make sure you execute it in a &lt;em&gt;virtual&lt;/em&gt; thread (easy enough, you can use &lt;code&gt;ExecutorService executor = Executors.newVirtualThreadPerTaskExecutor()&lt;/code&gt;), and &lt;em&gt;it just works&lt;/em&gt;!&lt;/p&gt;
+&lt;h2&gt;Spring Boot 3.2&lt;/h2&gt;
+&lt;p&gt;Your typical Spring Boot application uses thread pools (&lt;code&gt;Executor&lt;/code&gt; and &lt;code&gt;ExecutorService&lt;/code&gt; instances) all over the place! In your web services, in your messaging logic, etc. And now, in the new Spring Boot 3.2 milestones (the final release is due November 2023), you can have Spring Boot use virtual executors, with only a single, simple, property: &lt;code&gt;spring.threads.virtual.enabled=true&lt;/code&gt;.&lt;/p&gt;
+&lt;h2&gt;All Together Now&lt;/h2&gt;
+&lt;p&gt;Bear in mind: Spring Boot 3.2 is not yet GA. Java 21 is not yet GA. GraalVM supporting Java 21 is not GA. Things are a bit rough, but I&apos;ve been yearning to try everything all together: a GraalVM native image, with virtual threads, in a Spring Boot application. When everything looked like it was in place to try, I found a small bug in the &lt;a href=&quot;https://twitter.com/fniephaus/status/1699344224523518060&quot;&gt;GraalVM compiler to overcome&lt;/a&gt;!  Nothing the fantastic GraalVM team couldn&apos;t handle, of course, but as I said: things are a little &lt;em&gt;rough&lt;/em&gt;. Worth it, though! Let&apos;s get all the pieces in place so you can try it out.&lt;/p&gt;
+&lt;h3&gt;Installing GraalVM for Java 21&lt;/h3&gt;
+&lt;p&gt;First, we need to install GraalVM and Java 21. I&apos;m on a Mac with the Apple Silicon / ARM architecture, so I chose &lt;code&gt;graalvm-community-java21-darwin-aarch64-dev.tar.gz&lt;/code&gt; from  &lt;a href=&quot;https://github.com/graalvm/graalvm-ce-dev-builds/releases/tag/24.0.0-dev-20230907_0337&quot;&gt;the latest release (as of this writing)&lt;/a&gt;.  You could just download and unzip it, being sure to configure key environment variables like &lt;code&gt;JAVA_HOME&lt;/code&gt; and &lt;code&gt;PATH&lt;/code&gt; correctly. I&apos;m a fan of the &lt;a href=&quot;https://sdkman.io&quot;&gt;SDKMan project&lt;/a&gt;, so I wanted to use it to manage this newly downloaded release. I unzipped the &lt;code&gt;.tar.gz&lt;/code&gt; to a folder called - &lt;code&gt;~/bin/graalvm-community-openjdk-21/&lt;/code&gt;, and then ran the following command.&lt;/p&gt;
+&lt;pre&gt;&lt;code class=&quot;language-shell&quot;&gt;sdk install java graalvm-ce-21 $HOME/bin/graalvm-community-openjdk-21/Contents/Home
+&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;Then, to make sure it&apos;s available for everything:&lt;/p&gt;
+&lt;pre&gt;&lt;code class=&quot;language-shell&quot;&gt;sdk default java graalvm-ce-21
+&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;Open up a new shell and confirm it&apos;s worked:&lt;/p&gt;
+&lt;pre&gt;&lt;code class=&quot;language-shell&quot;&gt;&gt; native-image --version 
+native-image 21 2023-09-19
+GraalVM Runtime Environment GraalVM CE 21-dev+35.1 (build 21+35-jvmci-23.1-b14)
+Substrate VM GraalVM CE 21-dev+35.1 (build 21+35, serial gc)
+
+&lt;/code&gt;&lt;/pre&gt;
+&lt;h3&gt;Configuring a Spring Boot project to use Java 21&lt;/h3&gt;
+&lt;p&gt;Go to the &lt;a href=&quot;https://start.spring.io&quot;&gt;Spring Initializr (start.spring.io)&lt;/a&gt;, specify version &lt;code&gt;3.2.0 (M2)&lt;/code&gt; (or later, obviously), add &lt;code&gt;GraalVM&lt;/code&gt; and &lt;code&gt;Web&lt;/code&gt;, and then download the  archive, open it, and load it into your IDE.  We still need to configure the build to work with Java 21. This isn&apos;t ideal, yet, as Gradle doesn&apos;t really know about Java 21. But it will work. Basically. My prowess with Gradle is basically non-existent, but this configuration seems to work:&lt;/p&gt;
+&lt;pre&gt;&lt;code class=&quot;language-gradle&quot;&gt;plugins {
+    id &apos;java&apos;
+    id &apos;org.springframework.boot&apos; version &apos;3.2.0-M2&apos;
+    id &apos;io.spring.dependency-management&apos; version &apos;1.1.3&apos;
+    id &apos;org.graalvm.buildtools.native&apos; version &apos;0.9.24&apos;
+}
+
+group = &apos;com.example&apos;
+version = &apos;0.0.1-SNAPSHOT&apos;
+
+java {
+    sourceCompatibility = &apos;21&apos;
+}
+
+graalvmNative {
+
+    binaries {
+        main {
+            buildArgs.add(&apos;--enable-preview&apos;)
+        }
+    }
+}
+
+java {
+    toolchain { languageVersion = JavaLanguageVersion.of(21) }
+}
+
+repositories {
+    mavenCentral()
+    maven { url &apos;https://repo.spring.io/snapshot&apos; }
+    maven { url &apos;https://repo.spring.io/milestone&apos; }
+}
+
+dependencies {
+    implementation &apos;org.springframework.boot:spring-boot-starter-web&apos;
+    testImplementation &apos;org.springframework.boot:spring-boot-starter-test&apos;
+}
+
+tasks.named(&apos;test&apos;) {
+    useJUnitPlatform()
+}
+
+&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;Re-import that into build configuration into your IDE.&lt;/p&gt;
+&lt;p&gt;Add the following property to &lt;code&gt;application.properties&lt;/code&gt;:&lt;/p&gt;
+&lt;pre&gt;&lt;code class=&quot;language-properties&quot;&gt;spring.threads.virtual.enabled=true
+&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;And then change your &lt;code&gt;main(String[] args)&lt;/code&gt; class to look like this:&lt;/p&gt;
+&lt;pre&gt;&lt;code class=&quot;language-java&quot;&gt;package com.example.demo;
+
+import org.springframework.boot.SpringApplication;
+import org.springframework.boot.autoconfigure.SpringBootApplication;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.RestController;
+
+import java.util.Collection;
+import java.util.Set;
+
+@SpringBootApplication
+public class DemoApplication {
+
+    public static void main(String[] args) {
+        SpringApplication.run(DemoApplication.class, args);
+    }
+
+}
+
+@RestController
+class CustomersHttpController { 
+
+    @GetMapping(&quot;/customers&quot;)
+    Collection&amp;#x3C;Customer&gt; customers() {
+        return Set.of(new Customer(1, &quot;A&quot;), new Customer(2, &quot;B&quot;), new Customer(3, &quot;C&quot;));
+    }
+
+    record Customer(Integer id, String name) {
+    }
+
+}
+&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;You can run the program as usual: &lt;code&gt;./gradlew bootRun&lt;/code&gt;. And it&apos;s using Project Loom! But for the real fun stuff: let&apos;s build a GraalVM native image! &lt;code&gt;./gradlew nativeCompile&lt;/code&gt;. This might take a minute or two..&lt;/p&gt;
+&lt;p&gt;Once it&apos;s done, you can run the native binary in the &lt;code&gt;build&lt;/code&gt; directory: &lt;code&gt;./build/native/nativeCompile/demo&lt;/code&gt;. Now we&apos;re cookin&apos; with gas!&lt;/p&gt;
+&lt;p&gt;We&apos;re basically at the finish line for this litle adventure, but let me just remind you - &lt;em&gt;one more time&lt;/em&gt; - this is still not yet GA software! It will be by the end of  November 2023, if everything goes to plan, but it&apos;s not yet. That&apos;s why getting this blog out is so valuable for me: I want you to try things out. Even Project Loom, which will land in part in Java 21, due in less than two weeks - on September 19th, 2023 - is not strictly speaking &lt;em&gt;all done&lt;/em&gt;. We&apos;ll get part of it in this release, but there are two other columns of the support that you can try out today as preview featues, and if you find something, it&apos;s worth feeding that information back into the process so that these issues can be stamped out now, not later. After all, I just found a bug in the GraalVM compiler not two weeks ago! So, go try things out. It has never been a better time to be a Java developer. And these two things - Loom and GraalVM - are like free money.  Implemented successfully, you&apos;ll get better runtime scalability, energy efficiency, startup time, RAM consumption, and more, in your Spring Boot workloads. Upgrade, try things out. I&apos;ll bet you&apos;ll love it.&lt;/p&gt;</content:encoded></item><item><title><![CDATA[A Bootiful Podcast:  Spring Security lead Rob Winch]]></title><link>https://spring.io/blog/2023/09/07/a-bootiful-podcast-spring-security-lead-rob-winch</link><guid isPermaLink="true">https://spring.io/blog/2023/09/07/a-bootiful-podcast-spring-security-lead-rob-winch</guid><dc:creator><![CDATA[Josh Long]]></dc:creator><pubDate>Thu, 07 Sep 2023 00:00:00 GMT</pubDate><content:encoded>&lt;p&gt;Hi, Spring fans! Welcome to another installment of a Bootiful Podcast. In this interview, &lt;a href=&quot;https://twitter.com/starbuxman&quot;&gt;Josh Long (@starbuxman)&lt;/a&gt; talks to Spring Security legend and lead &lt;a href=&quot;https://twitter.com/ro_winch&quot;&gt;Rob Winch (@rob_winch)&lt;/a&gt;, recorded live from SpringOne 2023!&lt;/p&gt;
 &lt;iframe title=&quot;Spring Security lead Rob Winch&quot; allowtransparency=&quot;true&quot; height=&quot;150&quot; width=&quot;100%&quot; style=&quot;border: none; min-width: min(100%, 430px);height:150px;&quot; scrolling=&quot;no&quot; data-name=&quot;pb-iframe-player&quot; src=&quot;https://www.podbean.com/player-v2/?i=v966g-149ca7c-pb&amp;from=pb6admin&amp;share=1&amp;download=1&amp;rtl=0&amp;fonts=Arial&amp;skin=1&amp;font-color=&amp;logo_link=episode_page&amp;btn-skin=7&quot; loading=&quot;lazy&quot;&gt;&lt;/iframe&gt;</content:encoded></item><item><title><![CDATA[This Week in Spring - September 5th, 2023 ]]></title><link>https://spring.io/blog/2023/09/05/this-week-in-spring-september-5th-2023</link><guid isPermaLink="true">https://spring.io/blog/2023/09/05/this-week-in-spring-september-5th-2023</guid><dc:creator><![CDATA[Josh Long]]></dc:creator><pubDate>Tue, 05 Sep 2023 00:00:00 GMT</pubDate><content:encoded>&lt;p&gt;Hi, Spring fans! Welcome to another installment of &lt;em&gt;This Week in Spring&lt;/em&gt;! How are you? I just got back from another fabulous labor day weekend, and am headed to Oslo, Norway, for the fabulous JavaZone 2023 event. This will be my first time returning to lovely Oslo, Norway, since the pandemic! I can&apos;t wait! If you&apos;re there, don&apos;t hesitate to say &quot;hey&quot;!&lt;/p&gt;
 &lt;ul&gt;
 &lt;li&gt;&lt;a href=&quot;https://spring.io/blog/2023/08/29/spring-data-jdbc-how-to-maintain-your-database-schema&quot;&gt;Spring Data JDBC - How To Maintain Your Database Schema&lt;/a&gt;&lt;/li&gt;
@@ -619,8 +734,4 @@ We look forward to hear about your opinions and experiences with this.&lt;/p&gt;
 &lt;p&gt;Thanks to all those who have contributed with issue reports and pull requests.&lt;/p&gt;
 &lt;h3&gt;How can you help?&lt;/h3&gt;
 &lt;p&gt;If you&apos;re interested in helping out, check out the &lt;a href=&quot;https://github.com/spring-projects/spring-boot/labels/status%3A%20ideal-for-contribution&quot;&gt;&quot;ideal for contribution&quot; tag&lt;/a&gt; in the issue repository. If you have general questions, please ask on &lt;a href=&quot;https://stackoverflow.com&quot;&gt;stackoverflow.com&lt;/a&gt; using the &lt;a href=&quot;https://stackoverflow.com/tags/spring-boot&quot;&gt;&lt;code&gt;spring-boot&lt;/code&gt; tag&lt;/a&gt; or chat with the community on &lt;a href=&quot;https://gitter.im/spring-projects/spring-boot&quot;&gt;Gitter&lt;/a&gt;.&lt;/p&gt;
-&lt;p&gt;&lt;a href=&quot;https://spring.io/projects/spring-boot/&quot;&gt;Project Page&lt;/a&gt; | &lt;a href=&quot;https://github.com/spring-projects/spring-boot&quot;&gt;GitHub&lt;/a&gt; | &lt;a href=&quot;https://github.com/spring-projects/spring-boot/issues&quot;&gt;Issues&lt;/a&gt; | &lt;a href=&quot;https://docs.spring.io/spring-boot/docs/3.2.0-M2/reference/html&quot;&gt;Documentation&lt;/a&gt; | &lt;a href=&quot;https://stackoverflow.com/questions/tagged/spring-boot&quot;&gt;Stack Overflow&lt;/a&gt; | &lt;a href=&quot;https://gitter.im/spring-projects/spring-boot&quot;&gt;Gitter&lt;/a&gt;&lt;/p&gt;</content:encoded></item><item><title><![CDATA[Spring Boot 3.1.3 available now]]></title><link>https://spring.io/blog/2023/08/24/spring-boot-3-1-3-available-now</link><guid isPermaLink="true">https://spring.io/blog/2023/08/24/spring-boot-3-1-3-available-now</guid><dc:creator><![CDATA[St?phane Nicoll]]></dc:creator><pubDate>Thu, 24 Aug 2023 00:00:00 GMT</pubDate><content:encoded>&lt;p&gt;On behalf of the team and everyone who has contributed, I&apos;m happy to announce that Spring Boot &lt;code&gt;3.1.3&lt;/code&gt; has been released and is now available from Maven Central.&lt;/p&gt;
-&lt;p&gt;This release includes &lt;a href=&quot;https://github.com/spring-projects/spring-boot/releases/tag/v3.1.3&quot;&gt;82 bug fixes, documentation improvements, and dependency upgrades&lt;/a&gt;. Thanks to all those who have contributed with issue reports and pull requests.&lt;/p&gt;
-&lt;h3&gt;How can you help?&lt;/h3&gt;
-&lt;p&gt;If you&apos;re interested in helping out, check out the &lt;a href=&quot;https://github.com/spring-projects/spring-boot/labels/status%3A%20ideal-for-contribution&quot;&gt;&quot;ideal for contribution&quot; tag&lt;/a&gt; in the issue repository. If you have general questions, please ask on &lt;a href=&quot;https://stackoverflow.com&quot;&gt;stackoverflow.com&lt;/a&gt; using the &lt;a href=&quot;https://stackoverflow.com/tags/spring-boot&quot;&gt;&lt;code&gt;spring-boot&lt;/code&gt; tag&lt;/a&gt; or chat with the community on &lt;a href=&quot;https://gitter.im/spring-projects/spring-boot&quot;&gt;Gitter&lt;/a&gt;.&lt;/p&gt;
-&lt;p&gt;&lt;a href=&quot;https://spring.io/projects/spring-boot/&quot;&gt;Project Page&lt;/a&gt; | &lt;a href=&quot;https://github.com/spring-projects/spring-boot&quot;&gt;GitHub&lt;/a&gt; | &lt;a href=&quot;https://github.com/spring-projects/spring-boot/issues&quot;&gt;Issues&lt;/a&gt; | &lt;a href=&quot;https://docs.spring.io/spring-boot/docs/3.1.3/reference/html&quot;&gt;Documentation&lt;/a&gt; | &lt;a href=&quot;https://stackoverflow.com/questions/tagged/spring-boot&quot;&gt;Stack Overflow&lt;/a&gt; | &lt;a href=&quot;https://gitter.im/spring-projects/spring-boot&quot;&gt;Gitter&lt;/a&gt;&lt;/p&gt;</content:encoded></item></channel></rss>
+&lt;p&gt;&lt;a href=&quot;https://spring.io/projects/spring-boot/&quot;&gt;Project Page&lt;/a&gt; | &lt;a href=&quot;https://github.com/spring-projects/spring-boot&quot;&gt;GitHub&lt;/a&gt; | &lt;a href=&quot;https://github.com/spring-projects/spring-boot/issues&quot;&gt;Issues&lt;/a&gt; | &lt;a href=&quot;https://docs.spring.io/spring-boot/docs/3.2.0-M2/reference/html&quot;&gt;Documentation&lt;/a&gt; | &lt;a href=&quot;https://stackoverflow.com/questions/tagged/spring-boot&quot;&gt;Stack Overflow&lt;/a&gt; | &lt;a href=&quot;https://gitter.im/spring-projects/spring-boot&quot;&gt;Gitter&lt;/a&gt;&lt;/p&gt;</content:encoded></item></channel></rss>

@@ -3,5 +3,6 @@
   <module moduleId="org.eclipse.jst.jee.server:spo00" serverId="Tomcat v9.0 Server at localhost"/>
   <module moduleId="org.eclipse.jst.jee.server:spro01_test" serverId="Tomcat v9.0 Server at localhost"/>
   <module moduleId="org.eclipse.jst.jee.server:ex00" serverId="Tomcat v9.0 Server at localhost"/>
+  <module moduleId="org.eclipse.jst.jee.server:spro02" serverId="Tomcat v9.0 Server at localhost"/>
   <module moduleId="org.eclipse.jst.jee.server:spro01" serverId="Tomcat v9.0 Server at localhost"/>
 </modules>
