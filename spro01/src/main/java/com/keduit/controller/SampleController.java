@@ -13,6 +13,7 @@ import org.springframework.web.bind.WebDataBinder;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.InitBinder;
 import org.springframework.web.bind.annotation.ModelAttribute;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
@@ -93,6 +94,12 @@ public class SampleController {
     	log.info("..... ex04 - dto : " + dto);
     	log.info("..... ex04 - page : " + page);
     	return "/sample/ex04";
+    }
+    
+    // 페이지 에러 추가 처리
+    @GetMapping("/error/{statusCode}")
+    public String getErrorPage(@PathVariable String StatusCode) {
+    	return "custom404";
     }
     
     // 바로 아래의 re1 통한 re2 접근과 아래의 re2 접근의 방식이 다름
