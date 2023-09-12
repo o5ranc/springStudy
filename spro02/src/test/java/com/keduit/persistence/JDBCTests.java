@@ -15,20 +15,24 @@ public class JDBCTests {
 		try {
 			Class.forName("oracle.jdbc.driver.OracleDriver");
 		} catch (Exception e) {
+			// TODO: handle exception
 			e.printStackTrace();
 		}
 	}
 	
 	@Test
 	public void testConnection() {
-		try(Connection conn = DriverManager.getConnection("jdbc:oracle:thin:@localhost:1521:XE",
-				"spro02",
-				"spro02")) {
-			log.info(conn);
-		} catch(Exception e) {
-			//e.printStackTrace();
+		try(
+			Connection conn = DriverManager.getConnection(
+			"jdbc:oracle:thin:@localhost:1521:XE",
+			"spro02",
+			"spro02")
+				) {
+				log.info(conn);
+			
+		} catch (Exception e) {
+			// TODO: handle exception
 			fail(e.getMessage());
 		}
 	}
 }
-

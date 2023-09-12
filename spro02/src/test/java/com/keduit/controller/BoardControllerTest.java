@@ -16,15 +16,15 @@ import lombok.Setter;
 import lombok.extern.log4j.Log4j;
 
 @RunWith(SpringJUnit4ClassRunner.class)
-@WebAppConfiguration
+@WebAppConfiguration // Controller Test를 위한...
 @ContextConfiguration({"file:src/main/webapp/WEB-INF/spring/root-context.xml",
-	"file:src/main/webapp/WEB-INF/spring/appServlet/servlet-context.xml"})
+		"file:src/main/webapp/WEB-INF/spring/appServlet/servlet-context.xml"})
 @Log4j
 public class BoardControllerTest {
-	@Setter(onMethod_ = {@Autowired})
+
+	@Setter(onMethod_ = @Autowired)
 	private WebApplicationContext ctx;
 	
-	// request를 만들어서 보내주는 역활을 함
 	private MockMvc mockMvc;
 	
 	@Before
@@ -34,10 +34,59 @@ public class BoardControllerTest {
 	
 	@Test
 	public void testList() throws Exception {
-		// 주소표시줄에서의 호출된 효과
-		log.info(mockMvc.perform(MockMvcRequestBuilders.get("/board/list"))
+		log.info("확인?\n" +
+				mockMvc.perform(MockMvcRequestBuilders.get("/board/list"))
 				.andReturn()
 				.getModelAndView()
-				.getModelMap()); 
+				.getModelMap()				
+				);
 	}
+	
+	@Test
+	public void testRegister() throws Exception {
+		String resultPage = mockMvc
+				.perform(MockMvcRequestBuilders.post("/board/register")
+					.param("title", "mockmvc test title")
+					.param("content", "mockmvc test content")
+					.param("writer", "tester"))
+				.andReturn()
+				.getModelAndView()
+				.getViewName();
+		
+		log.info("resultPage" + resultPage);
+	}
+	
+	@Test
+	public void testGet() throws Exception {
+		
+		log.info(mockMvc.perform(MockMvcRequestBuilders.get("/board/get")
+				.param("bno", "27"))
+				.andReturn()
+				.getModelAndView()
+				.getModel()
+				);
+	}
+	
+	@Test
+	public void testModify() throws Exception {
+		String resultPage = mockMvc
+				.perform(MockMvcRequestBuilders.post("/board/modify")
+						.param("bno", "27")
+						.param("title", "점심")
+						.param("content", "배고파")
+						.param("writer", "점심메뉴")
+						).andReturn().getModelAndView().getViewName();
+		log.info(resultPage);
+	}
+	
+	@Test
+	public void testRemove() throws Exception {
+		String resultPage = mockMvc
+				.perform(MockMvcRequestBuilders.post("/board/remove")
+						.param("bno", "27")
+						).andReturn().getModelAndView().getViewName();
+		log.info(resultPage);
+	}
+	
+	
 }

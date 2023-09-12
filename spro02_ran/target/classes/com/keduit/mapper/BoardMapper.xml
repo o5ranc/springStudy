@@ -1,0 +1,45 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+  PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+  "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+  <!-- mybatis 사이틍의 시작하기 페이지 가이드대로 위 doctype 복사 붙여넣기  -->
+
+<mapper namespace="com.keduit.mapper.BoardMapper">
+	<select id="getList" resultType="com.keduit.domain.BoardVO">
+		SELECT * FROM board order by bno desc
+	</select>
+	
+	<insert id="insert">
+		insert into board (bno, title, content, writer)
+		values (seq_board.nextval, #{title}, #{content},#{writer})
+	</insert>
+	
+	<!-- 추가된 부분 -->
+	<insert id="insertSelectKey">
+		<selectKey keyProperty="bno" resultType="long" order="BEFORE">
+			select seq_board.nextval from dual
+		</selectKey>
+		insert into board 
+		(bno, title, content, writer)
+		values 
+		(#{bno}, #{title},#{content}, #{writer})
+	</insert>
+	
+	<!-- 인터페이스에서 받아온 bno 매개변수랑 연결된다 -->
+	<select id="read" resultType="com.keduit.domain.BoardVO">
+		SELECT * FROM board WHERE bno = #{bno}
+	</select>
+	
+	<delete id="delete">
+		DELETE FROM board WHERE bno = #{bno}
+	</delete>
+	
+	<update id="update">
+		update board set
+		title = #{title},
+		content = #{content},
+		writer = #{writer},
+		updatedate = sysdate
+		WHERE bno = #{bno}
+	</update>
+</mapper>

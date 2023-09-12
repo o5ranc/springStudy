@@ -11,47 +11,54 @@ import lombok.RequiredArgsConstructor;
 import lombok.ToString;
 import lombok.extern.log4j.Log4j;
 
-@Service // 서비스로 Container가 관리하겠다는 의미
+@Service
 @Log4j
-@RequiredArgsConstructor // 생성자 주입 사용
+@RequiredArgsConstructor
 @ToString
 public class BoardServiceImpl implements BoardService {
-	private final BoardMapper mapper;
 
+	private final BoardMapper mapper;
+	
 	@Override
-	public Long register(BoardVO board) {
-		log.info("...BoardServiceImpl(register)..." + board);
-		mapper.insertSelectKey(board);
-		return board.getBno(); // 등록하면서 bno 리턴
+	public Long register(BoardVO boardVO) {
+		log.info("... register ..." + boardVO);
+		mapper.insertSelectKey(boardVO);
+		// TODO Auto-generated method stub
+		return boardVO.getBno();
 	}
 
 	@Override
 	public BoardVO get(Long bno) {
-		log.info("...BoardServiceImpl(get)..." + bno);
-		BoardVO bVO = mapper.read(bno);
-		return bVO;
+		// TODO Auto-generated method stub
+		BoardVO selectVo = mapper.readBoard(bno);
+		return selectVo;
 	}
 
 	@Override
-	public boolean modify(BoardVO board) {
-		log.info("...BoardServiceImpl(modify)..." + board);
-		int cnt = mapper.update(board);
-		return (cnt == 1) ? true : false;
+	public boolean modify(BoardVO boardVo) {
+		// TODO Auto-generated method stub
+		int result = mapper.updateBoard(boardVo);
+		
+		if(result != 0) return true;
+		
+		return false;
 	}
 
 	@Override
 	public boolean remove(Long bno) {
-		log.info("...BoardServiceImpl(remove)..." + bno);
-		int cnt = mapper.delete(bno);
-		return (cnt == 1) ? true : false;
+		// TODO Auto-generated method stub
+		int result = mapper.deleteBoard(bno);
+		if(result != 0) return true;
+		
+		return false;
+		
 	}
 
 	@Override
 	public List<BoardVO> getList() {
-		List<BoardVO> boardList;
-		log.info("...BoardServiceImpl(getList)...");
-		boardList = mapper.getList();
-		return boardList;
+		// TODO Auto-generated method stub
+		
+		return mapper.getList();
 	}
 
 }
