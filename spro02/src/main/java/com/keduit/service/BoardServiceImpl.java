@@ -5,6 +5,7 @@ import java.util.List;
 import org.springframework.stereotype.Service;
 
 import com.keduit.domain.BoardVO;
+import com.keduit.domain.Criteria;
 import com.keduit.mapper.BoardMapper;
 
 import lombok.RequiredArgsConstructor;
@@ -39,26 +40,29 @@ public class BoardServiceImpl implements BoardService {
 		// TODO Auto-generated method stub
 		int result = mapper.updateBoard(boardVo);
 		
-		if(result != 0) return true;
-		
-		return false;
+		return (result != 0);
 	}
 
 	@Override
 	public boolean remove(Long bno) {
 		// TODO Auto-generated method stub
 		int result = mapper.deleteBoard(bno);
-		if(result != 0) return true;
-		
-		return false;
+				
+		return (result != 0);
 		
 	}
 
+//	@Override
+//	public List<BoardVO> getList() {
+//		// TODO Auto-generated method stub
+//		
+//		return mapper.getList();
+//	}
 	@Override
-	public List<BoardVO> getList() {
+	public List<BoardVO> getList(Criteria criteria) {
 		// TODO Auto-generated method stub
 		
-		return mapper.getList();
+		return mapper.getListWithPaging(criteria);
 	}
 
 }

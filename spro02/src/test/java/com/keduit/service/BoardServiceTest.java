@@ -1,6 +1,7 @@
 package com.keduit.service;
 
 import static org.junit.Assert.assertNotNull;
+import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.log;
 
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -9,6 +10,7 @@ import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 
 import com.keduit.domain.BoardVO;
+import com.keduit.domain.Criteria;
 
 import lombok.extern.log4j.Log4j;
 
@@ -45,8 +47,8 @@ public class BoardServiceTest {
 	
 	@Test
 	public void testGetList() {
-		service.getList();
-		
+		//service.getList();
+		service.getList(new Criteria(6, 10)).forEach(board->log.info(board));
 	}
 	
 	@Test
@@ -60,7 +62,7 @@ public class BoardServiceTest {
 		boolean result =service.modify(bVo);
 		
 		log.info("result = " + result);
-		service.getList();
+		//service.getList();
 	}
 	
 	@Test

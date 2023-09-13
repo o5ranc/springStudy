@@ -25,6 +25,11 @@ public class BoardMapperTest {
 	}
 	
 	@Test
+	public void testPaging() {
+		//Criteria cri = new
+	}
+	
+	@Test
 	public void testInsert() {
 		BoardVO board = new BoardVO();
 		board.setTitle("게시글6");
@@ -32,6 +37,16 @@ public class BoardMapperTest {
 		board.setWriter("그녀석");
 		
 		boardMapper.insertBoard(board);
+		
+		/* 더미 데이터 넣기위한 임시 코드 백업
+		 * for(int i = 1; i < 100; i++) {
+			board.setTitle("게시글" + i + i + i);
+			board.setContent("게시글 내용" + i + i + i);
+			board.setWriter("그녀석" + i);
+			
+			boardMapper.insertBoard(board);
+		}
+		 */
 	}
 	
 	@Test

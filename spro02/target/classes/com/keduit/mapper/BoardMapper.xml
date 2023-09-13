@@ -8,6 +8,18 @@
 		SELECT * FROM board order by bno desc
 	</select>
 	
+	<select id="getListWithPaging" resultType="com.keduit.domain.BoardVO">
+		<![CDATA[
+		SELECT bno, title, content, writer, regDate, updateDate
+		from (
+			select /*+ INDEX_DESC(board pk_board) */ rownum rn, bno, title,
+													 content, writer, regDate, updateDate
+		    from board
+		    where rownum <= #{pageNum} * #{amount})
+		where rn > (#{pageNum} - 1) * #{amount}
+		]]>
+	</select>
+	
 	<insert id="insertBoard">
 		insert into Board (bno,title,content,writer)
 		values (seq_board.nextval,#{title},#{content},#{writer})
