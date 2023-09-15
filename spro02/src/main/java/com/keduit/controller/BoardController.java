@@ -10,6 +10,7 @@ import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import com.keduit.domain.BoardVO;
 import com.keduit.domain.Criteria;
+import com.keduit.domain.PageDTO;
 import com.keduit.service.BoardService;
 
 import lombok.RequiredArgsConstructor;
@@ -25,8 +26,12 @@ public class BoardController {
 
 	@GetMapping("/list")
 	public void list(Criteria cri, Model model) {
-		log.info("list.......");
+		log.info("list......." + cri);
+		int total = service.getTotalCount(cri);
+		log.info("total......." + total);
+
 		model.addAttribute("list", service.getList(cri));
+		model.addAttribute("pageMaker", new PageDTO(cri, 114));
 	}
 
 	@PostMapping("/register")
@@ -43,29 +48,39 @@ public class BoardController {
 	public void register() {
 	}
 
-	@GetMapping({"/get", "/modify"})
+	@GetMapping({ "/get", "/modify" })
 	public void get(@RequestParam("bno") Long bno, Model model) {
 		log.info("get...........");
 		model.addAttribute("board", service.get(bno));
 	}
 
 	@PostMapping("/modify")
-	public String modify(BoardVO board, RedirectAttributes rttr) {
+	public String modify(BoardVO board, Criteria cri, RedirectAttributes rttr) {
 		log.info("...modify : " + board);
 		if (service.modify(board)) {
 			rttr.addFlashAttribute("result", "success");
 		}
+		
+		rttr.addAttribute("pageNum", cri.getPageNum());
+		rttr.addAttribute("amount", cri.getAmount());
+		rttr.addAttribute("type", cri.getType());
+		rttr.addAttribute("keyword", cri.getKeyword());
 
 		return "redirect:/board/list";
 	}
 
 	@PostMapping("/remove")
-	public String remove(@RequestParam("bno") Long bno, RedirectAttributes rttr) {
+	public String remove(@RequestParam("bno") Long bno, Criteria cri, RedirectAttributes rttr) {
 		log.info("...remove..." + bno);
 
 		if (service.remove(bno)) {
 			rttr.addAttribute("result", "success");
 		}
+		
+		rttr.addAttribute("pageNum", cri.getPageNum());
+		rttr.addAttribute("amount", cri.getAmount());
+		rttr.addAttribute("type", cri.getType());
+		rttr.addAttribute("keyword", cri.getKeyword());
 
 		return "redirect:/board/list";
 

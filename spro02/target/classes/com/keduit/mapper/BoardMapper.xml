@@ -8,22 +8,53 @@
 		SELECT * FROM board order by bno desc
 	</select>
 	
+	<!-- getListWithPaging 내에 있던 태그 밖으로 빼서 정의함, 쓸 부분에서는 include 사용 -->
+	<sql id="criteria">
+		<trim prefix="(" suffix=") and" prefixOverrides="OR">
+	    	<foreach item='type' collection="typeArr">
+	    		<trim prefix="OR">
+	    			<choose>
+	    				<when test="type == 'T'.toString()">
+	    					title like '%'||#{keyword}||'%'
+	    				</when>
+	    				<when test="type == 'C'.toString()">
+	    					content like '%'||#{keyword}||'%'
+	    				</when>
+	    				<when test="type == 'W'.toString()">
+	    					writer like '%'||#{keyword}||'%'
+	    				</when>
+	    			</choose>
+	    		</trim>
+	    	</foreach>
+	    </trim> 
+	</sql>
+	
 	<select id="getListWithPaging" resultType="com.keduit.domain.BoardVO">
-		<![CDATA[
 		SELECT bno, title, content, writer, regDate, updateDate
 		from (
-			select /*+ INDEX_DESC(board pk_board) */ rownum rn, bno, title,
-													 content, writer, regDate, updateDate
+			select /*+ INDEX_DESC(board pk_board) */ 
+				rownum rn, bno, title,
+				content, writer, regDate, updateDate
 		    from board
-		    where rownum <= #{pageNum} * #{amount})
-		where rn > (#{pageNum} - 1) * #{amount}
+		    where 
+		    <include refid="criteria"></include>
+		   	<![CDATA[ rownum <= #{pageNum} * #{amount})
+			where rn > (#{pageNum} - 1) * #{amount}
 		]]>
 	</select>
+	<!-- <when test="type == 'W'.toString()"> 내에서 'W'.toString() 
+	대신 "W" 라고 하면 에러남 또한, "OR" 프리픽스를 맨 앞에 OR과 같이 불필요한 부분의 것은 제거하는 역할로 Trim 사용 --> 
 	
 	<insert id="insertBoard">
 		insert into Board (bno,title,content,writer)
 		values (seq_board.nextval,#{title},#{content},#{writer})
 	</insert>
+	
+	<select id="getTotalCount" resultType="int">
+		select count(*) from board where
+		<include refid="criteria"></include>
+		bno > 0
+	</select>
 	
 	<insert id="insertSelectKey">
 	<!-- 읽고 나서 실행(Before) -->

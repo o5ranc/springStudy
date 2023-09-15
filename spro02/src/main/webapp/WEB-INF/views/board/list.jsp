@@ -22,9 +22,48 @@
 			</div>
 			<!-- /.panel-heading -->
 			<div class="panel-body">
+				<div class="row">
+					<div class="col-lg-12">
+						<form class="form-inline" id="searchForm" action="/board/list" method="GET">
+							<select name="type" class="form-control form-select-lg mb-3" aria-label="Default select example">
+								<option value="">검색 종류</option>
+								<option value="T"
+								<c:out value="${pageMaker.cri.type eq 'T'  ? 'selected' : '' }"/>
+								>제목</option>
+								<option value="C"
+								<c:out value="${pageMaker.cri.type eq 'C' ? 'selected' : '' }"/>
+								>내용</option>
+								<option value="W"
+								<c:out value="${pageMaker.cri.type eq 'W' ? 'selected' : ''  }"/>
+								>글쓴이</option>
+								<option value="TC"
+								<c:out value="${pageMaker.cri.type eq 'TC' ? 'selected' : ''}"/>
+								>제목 OR 내용</option>
+								<option value="TW"
+								<c:out value="${pageMaker.cri.type eq 'TW' ? 'selected' : ''}"/>
+								>제목 OR 글쓴이</option>
+								<option value="CW"
+								<c:out value="${pageMaker.cri.type eq 'CW' ? 'selected' : ''} "/>
+								>내용 OR 글쓴이</option>
+								<option value="TCW"
+								<c:out value="${pageMaker.cri.type eq 'TCW' ? 'selected' : ''}"/>
+								>제목 OR 내용 OR 글쓴이</option>
+							</select>
+							<input name="keyword" class="form-control mr-sm-2" type="search"
+								placeholder="검색조건"
+								value="${pageMaker.cri.keyword }"
+								>
+							
+							<input name="pageNum" value="${pageMaker.cri.pageNum}">
+							<input name="amount" value="${pageMaker.cri.amount}">
+							<button class="btn btn-outline-success my-2 my-sm-0"
+								>검색조건</button>
+						</form>
+					</div>
+				</div>
 				<table width="100%"
-					class="table table-striped table-bordered table-hover"
-					id="dataTables-example">
+					class="table table-striped table-bordered table-hover">
+					<!-- id="dataTables-example"> -->
 					<thead>
 						<tr>
 							<th>글번호</th>
@@ -52,6 +91,35 @@
 				</table>
 				<!-- /.table-responsive -->
 
+
+				<div class="row">
+					<div class="pull-right">
+						<ul class="pagination">
+							<c:if test="${pageMaker.prev}">
+								<li class="paginate_button previous"><a
+									href="${pageMaker.startPage - 1}">Previous</a></li>
+							</c:if>
+							<c:forEach var="num" begin="${pageMaker.startPage}"
+								end="${pageMaker.endPage}">
+								<li
+									class='paginate_button ${pageMaker.cri.pageNum == num ? "active" : ""}'>
+									<a href="${num}">${num}</a>
+							</c:forEach>
+							<c:if test="${pageMaker.next}">
+								<li class="paginate_button next"><a
+									href="${pageMaker.endPage + 1}">Next</a></li>
+							</c:if>
+						</ul>
+					</div>
+				</div>
+				
+				<form id="actionForm" action="/board/list" method="GET">
+					<input type="hidden" name="pageNum"
+						value="${pageMaker.cri.pageNum }"> <input type="hidden"
+						name="amount" value="${pageMaker.cri.amount }"> <input
+						type="hidden" name="keyword" value="${pageMaker.cri.keyword }"> <input
+						type="hidden" name="type" value="${pageMaker.cri.type }">
+				</form>
 
 				<!-- Modal -->
 				<div class="modal fade" id="myModal" tabindex="-1" role="dialog"
@@ -110,6 +178,31 @@
 	$("#regBtn").on("click", function() {
 		self.location = "/board/register";
 	});
+
+	const actionForm = $("#actionForm"); // 해당컴포넌트 가져오기
+	$(".paginate_button a").on("click", function(e) {
+		e.preventDefault();
+		console.log("---------click-----------");
+		actionForm.find("input[name='pageNum']").val($(this).attr("href"));
+		actionForm.submit();
+	});
+	
+	const searchForm = $("#searchForm");
+	$("#searchForm button").on("click", function(e) {
+		console.log("searchForm button click!!!");
+		if(!searchForm.find("option:selected").val()) {
+			alert("검색 키워드를 선택하세요.");
+			return false;
+		}
+		
+		if(!searchForm.find("input[name='keyword']").val()) {
+			alert("검색 키워드를 입력하세요.");
+			return false;
+		}
+		
+		searchForm.find("input[name='pageNum']").val("1")
+		searchForm.submit();
+	})
 </script>
 
 <%@include file="../includes/footer.jsp"%>

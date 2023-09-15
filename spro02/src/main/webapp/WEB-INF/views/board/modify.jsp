@@ -93,7 +93,20 @@
 			} else if(operation === "list") {
 				formObj.attr("action", "/board/list")
 				       .attr("method", "GET");
+				
+				const pageNumTag = $("input[name='pageNum']").clone();
+				const amountTag = $("input[name='amount']").clone();
+				const typeTag = $("input[name='type']").clone();
+				const keywordTag = $("input[name='keyword']").clone();
+				
+				formObj.empty();
+				formObj.append(pageNumTag);
+				formObj.append(amountTag);
+				formObj.append(typeTag);
+				formObj.append(keywordTag);
 			}
+			
+			
 			
 			formObj.submit();
 		});

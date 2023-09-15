@@ -21,4 +21,6 @@ public interface BoardMapper {
 
 	public List<BoardVO> getListWithPaging(Criteria cri);
 
+	public int getTotalCount(Criteria cri);
+
 }
