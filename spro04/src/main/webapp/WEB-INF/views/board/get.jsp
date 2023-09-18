@@ -69,22 +69,62 @@
 </script>     
        
 <script type="text/javascript">
+$(document).ready(function() {
+	console.log("========================");
+	console.log("======== JS TEST =======");
+	
+	const bnoValue = '<c:out value="${board.bno}"/>';
+	
+	replyService.add(
+		{reply:"JS TEST", replyer: "tester", bno:bnoValue},
+		function(result) {
+			//alert("RESULT : " + result);
+		}
+	)
+	
+	// http://localhost:8093/reply/pages/124/1.json 를 주소표시줄에 입력하면 XML
+	// 형태로 결과를 웹화면에 보여줌. 
+	replyService.getList({bno: bnoValue, page:1},
+		function(list) {
+			for(let i = 0, len = list.length||0; i < len; i++) {
+				console.log(list[i]);
+			}
+		}
+	);
+	
+	replyService.remove(39, function(count) {
+        console.log("remove : " + count);
 
+        if(count==="success") {
+            alert("removed");
+        }
+    }, function(err){
+        alert("remove error");
+    });
+	
+	replyService.update({
+		rno: 30,
+		bno: bnoValue,
+		reply: "update from get.jsp"
+		}, function(result) {
+			alert("수정 완료!")
+		}
+	)
+	
 	console.log(replyService);
-
-	$(document).ready(function() {
-		const operform = $("#operform");
-		
-		$("button[data-oper='modify']").on("click", function(e) {
-			operform.attr("action", "/board/modify").submit();
-		});
-		
-		$("button[data-oper='list']").on("click", function(e) {
-			operform.find("#bno").remove();
-			operform.attr("action", "/board/list");
-			operform.submit();
-		});
+	
+	const operform = $("#operform");
+	
+	$("button[data-oper='modify']").on("click", function(e) {
+		operform.attr("action", "/board/modify").submit();
 	});
+	
+	$("button[data-oper='list']").on("click", function(e) {
+		operform.find("#bno").remove();
+		operform.attr("action", "/board/list");
+		operform.submit();
+	});
+});
 </script>
             
 <%@include file="../includes/footer.jsp"%>
