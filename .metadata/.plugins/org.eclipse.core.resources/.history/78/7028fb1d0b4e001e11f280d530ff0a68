@@ -1,6 +1,0 @@
-package com.keduit.domain;
-
-public class SampleDto {
-	private String name;
-	private int age;
-}

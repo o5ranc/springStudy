@@ -1,5 +1,0 @@
-package com.keduit.controller;
-
-public @interface GetMapping {
-
-}
