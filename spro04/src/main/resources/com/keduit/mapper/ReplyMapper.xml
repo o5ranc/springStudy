@@ -21,7 +21,18 @@
 	</update>
 	
 	<select id="getListWithPaging" resultType="com.keduit.domain.ReplyVO">
-		select * from reply where bno = #{bno}
+	<![CDATA[
+		select rno, bno, reply, replyer, replyDate, updateDate
+		from
+		( select /*+Index(reply idx_reply )*/
+			rownum rn, rno, bno, reply, replyer, replyDate, updateDate
+			from reply
+			where bno = #{bno} and rno > 0
+							and rownum <= #{cri.pageNum} * #{cri.amount}
+		)where rn > (#{cri.pageNum} - 1) * #{cri.amount}
+		 
+		]]>
+		
 	</select>
 	
 	<select id="getCountByBno" resultType="int">

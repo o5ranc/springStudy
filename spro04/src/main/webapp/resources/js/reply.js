@@ -31,18 +31,41 @@ const replyService = (function () {
     });
   }
 
-  function getList(param, callback, error) {
+  async function getList(param, callback, error) {
     const bno = param.bno;
     const page = param.page || 1;
 
-    $.getJSON("/reply/pages/" + bno + "/" + page + ".json", function (data) {
-      if (callback) {
-        callback(data);
+    await $.getJSON(
+      "/reply/pages/" + bno + "/" + page + ".json",
+      function (data) {
+        if (callback) {
+          callback(data.replyCnt, data.list);
+        }
       }
-    }).fail(function (xhr, status, err) {
+    ).fail(function (xhr, status, err) {
       if (error) {
         error(err);
       }
+    });
+  }
+
+  function get(rno, callback, error) {
+    console.log("get----------------");
+
+    $.ajax({
+      type: "get",
+      url: "/reply/" + rno,
+      data: JSON.stringify(rno),
+      contentType: "application/json; charset=utf-8",
+      success: function (getResult, status, xhr) {
+        console.log("xhr : ", xhr);
+        if (callback) {
+          callback(getResult);
+        }
+      },
+      error: function (xhr, status, err) {
+        if (error) error(err);
+      },
     });
   }
 
@@ -82,11 +105,52 @@ const replyService = (function () {
     });
   }
 
+  function displayTime(timeValue) {
+    const today = new Date();
+    const gap = today.getTime() - timeValue;
+
+    const dateObj = new Date(timeValue);
+    let str = "";
+
+    if (gap < 1000 * 60 * 60 * 24) {
+      /*
+      const hh = dateObj.getHours().toString().padStart(2, "0");
+      const mm = dateObj.getMinutes().toString().padStart(2, "0");
+      const ss = dateObj.getSeconds().toString().padStart(2, "0");
+      */
+      const hh = dateObj.getHours();
+      const mi = dateObj.getMinutes();
+      const ss = dateObj.getSeconds();
+
+      return [
+        (hh > 9 ? "" : "0") + hh,
+        ":",
+        (mi > 9 ? "" : "0") + mi,
+        ":",
+        (ss > 9 ? "" : "0") + ss,
+      ].join("");
+    } else {
+      const yy = dateObj.getFullYear();
+      const mm = dateObj.getMonth() + 1;
+      const dd = dateObj.getDate();
+
+      return [
+        yy,
+        "/",
+        (mm > 9 ? "" : "0") + mm,
+        "/",
+        (dd > 9 ? "" : "0") + dd,
+      ].join("");
+    }
+  }
+
   // 리턴할수 있도록 등록
   return {
     add: add,
     getList: getList,
+    get: get,
     remove: remove,
     update: update,
+    displayTime: displayTime,
   };
 })();

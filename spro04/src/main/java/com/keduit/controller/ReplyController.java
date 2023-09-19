@@ -1,7 +1,5 @@
 package com.keduit.controller;
 
-import java.util.List;
-
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
@@ -15,6 +13,7 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.keduit.domain.Criteria;
+import com.keduit.domain.ReplyPageDTO;
 import com.keduit.domain.ReplyVO;
 import com.keduit.service.ReplyService;
 
@@ -42,7 +41,7 @@ public class ReplyController {
 	}
 	
 	@GetMapping(value = "/{rno}",
-			produces = {MediaType.APPLICATION_XML_VALUE, MediaType.APPLICATION_JSON_VALUE})
+			produces = {MediaType.APPLICATION_JSON_VALUE, MediaType.APPLICATION_XML_VALUE})
 	public ResponseEntity<ReplyVO> get(@PathVariable("rno") Long rno) {
 		log.info("------------ get : " + rno);
 		return new ResponseEntity<>(service.get(rno), HttpStatus.OK);
@@ -50,15 +49,15 @@ public class ReplyController {
 	
 	@GetMapping(value = "/pages/{bno}/{page}",
 			produces = {MediaType.APPLICATION_XML_VALUE, MediaType.APPLICATION_JSON_VALUE})
-	public ResponseEntity<List<ReplyVO>> getList(
+	public ResponseEntity<ReplyPageDTO> getList(
 			@PathVariable("bno") Long bno, @PathVariable("page") int page){
 		log.info("-----getList : " + bno + ", " + page);
 		
 		Criteria cri = new Criteria(page,10);
 		log.info("cri : " + cri);
 		
-		
-		return new ResponseEntity<>(service.getList(cri, bno), HttpStatus.OK);
+		// service.getListPage가 DTO List를 만들어 가져다줌
+		return new ResponseEntity<>(service.getListPage(cri, bno), HttpStatus.OK);
 	}
 	
 	@DeleteMapping(value = "/{rno}",

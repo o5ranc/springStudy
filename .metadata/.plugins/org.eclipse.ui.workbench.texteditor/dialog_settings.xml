@@ -1,28 +1,28 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <section name="Workbench">
 	<section name="org.eclipse.ui.texteditor.FindReplaceDialog">
-		<item key="selection" value="getReplyList"/>
+		<item key="selection" value="replyService"/>
 		<item key="wrap" value="true"/>
 		<item key="casesensitive" value="false"/>
 		<item key="wholeword" value="false"/>
 		<item key="incremental" value="false"/>
 		<item key="isRegEx" value="false"/>
 		<list key="findhistory">
-			<item value="getReplyList"/>
-			<item value="createReply"/>
-			<item value="encoding"/>
-			<item value="filter"/>
-			<item value="gson"/>
-			<item value="post"/>
-			<item value="@RequestBody"/>
-			<item value="ResponseBody"/>
-			<item value="@ResponseBody"/>
-			<item value="&lt;form"/>
-			<item value="form"/>
-			<item value="hidden"/>
-			<item value="move"/>
-			<item value="scott"/>
-			<item value="1.8"/>
+			<item value="replyService"/>
+			<item value="showList"/>
+			<item value="myModalLabel"/>
+			<item value="댓글추가"/>
+			<item value="$(document).ready("/>
+			<item value="modal"/>
+			<item value="myModal"/>
+			<item value="&lt;!-- modal"/>
+			<item value="getHour"/>
+			<item value="getHour "/>
+			<item value="displayTime"/>
+			<item value="get:get"/>
+			<item value="css/"/>
+			<item value="css"/>
+			<item value="chat"/>
 		</list>
 		<list key="replacehistory">
 		</list>
