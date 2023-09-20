@@ -1,0 +1,61 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xmlns:context="http://www.springframework.org/schema/context"
+	xmlns:aop="http://www.springframework.org/schema/aop"
+	xmlns:tx="http://www.springframework.org/schema/tx"
+	xmlns:mybatis-spring="http://mybatis.org/schema/mybatis-spring"
+
+	xsi:schemaLocation="http://mybatis.org/schema/mybatis-spring http://mybatis.org/schema/mybatis-spring-1.2.xsd
+		http://www.springframework.org/schema/beans https://www.springframework.org/schema/beans/spring-beans.xsd
+		http://www.springframework.org/schema/context http://www.springframework.org/schema/context/spring-context-4.3.xsd
+		http://www.springframework.org/schema/aop http://www.springframework.org/schema/aop/spring-aop-4.3.xsd
+		http://www.springframework.org/schema/tx http://www.springframework.org/schema/tx/spring-tx-4.3.xsd">
+	
+	<!-- Root Context: defines shared resources visible to all other web components -->
+	
+	
+	
+	<!-- 히카리 CP 빈 등록 -->
+	<bean id="hikariConfig" class="com.zaxxer.hikari.HikariConfig">
+		<!-- <property name="driverClassName"
+			value="oracle.jdbc.driver.OracleDriver">
+		</property> -->
+		<property name="driverClassName"
+		value="net.sf.log4jdbc.sql.jdbcapi.DriverSpy">
+		</property>
+		<property name="jdbcUrl"
+			value="jdbc:log4jdbc:oracle:thin:@localhost:1521:XE"></property>
+		<property name="username" value="spro02"></property>
+		<property name="password" value="spro02"></property>
+	</bean>
+
+	<!-- 히카리 CP 설정 -->
+	<!-- 데이터베이스 관련 정보 -->
+	<bean id="dataSource" class="com.zaxxer.hikari.HikariDataSource"
+		destroy-method="close">
+		<constructor-arg ref="hikariConfig" />
+	</bean>
+
+	<!-- 데이터베이스 연결 맺고 끊어질 때가지의 라이프 사이클 관리하는 sqlSession 객체를 만듬 -->
+	<bean id="sqlSessionFactory"
+		class="org.mybatis.spring.SqlSessionFactoryBean">
+		<property name="dataSource" ref="dataSource"></property>
+
+	</bean>
+	
+	<bean id="transactionManager" 
+		class="org.springframework.jdbc.datasource.DataSourceTransactionManager">
+		<property name="dataSource" ref="dataSource"></property>
+	</bean>
+	
+	<tx:annotation-driven/>
+	
+	<mybatis-spring:scan base-package="com.keduit.mapper"/>
+	
+	<context:component-scan base-package="com.keduit.service"></context:component-scan>	
+	<context:component-scan base-package="com.keduit.aop"></context:component-scan>	
+	
+	<!-- autoproxy로 만듬  -->
+	<aop:aspectj-autoproxy></aop:aspectj-autoproxy> 
+</beans>
