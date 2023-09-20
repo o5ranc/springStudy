@@ -42,9 +42,8 @@ public class ReplyServiceImpl implements ReplyService {
 	@Transactional
 	@Override
 	public int register(ReplyVO vo) {
-		
 		log.info("---------- register---- " + vo);
-//		boardmapper.updateReplyCnt(vo.getBno(), 1);
+		boardmapper.updateReplyCnt(vo.getBno(), 1); // amount 1 카운트 올리기
 		return mapper.insert(vo);
 	}
 
@@ -62,7 +61,7 @@ public class ReplyServiceImpl implements ReplyService {
 		log.info("------------ delete ------- " + rno);
 		
 		ReplyVO vo = mapper.read(rno);
-//		boardmapper.updateReplyCnt(vo.getBno(), -1);
+		boardmapper.updateReplyCnt(vo.getBno(), -1);
 		return mapper.delete(rno);
 	}
 

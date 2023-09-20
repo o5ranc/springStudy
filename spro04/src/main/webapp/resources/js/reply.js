@@ -28,7 +28,7 @@ const replyService = (function () {
           error(err);
         }
       },
-    });
+    })
   }
 
   async function getList(param, callback, error) {
@@ -46,7 +46,7 @@ const replyService = (function () {
       if (error) {
         error(err);
       }
-    });
+    })
   }
 
   function get(rno, callback, error) {

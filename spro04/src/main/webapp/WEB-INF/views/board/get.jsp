@@ -288,6 +288,16 @@ $(document).ready(function() {
 			showList(1);
 		})
 	})
+	
+	replyPageFooter.on("click", "li a", function(e) {
+        e.preventDefault();
+        console.log("pageChange........");
+        const targetPage = $(this).attr("href");
+        console.log("targetPage : ", targetPage);
+
+        pageNum = targetPage;
+        showList(pageNum);
+    });
 });
 </script>
 
@@ -369,6 +379,8 @@ $(document).ready(function() {
 			operform.submit();
 		});
 	});
+	
+	
 </script>
 
 <%@include file="../includes/footer.jsp"%>

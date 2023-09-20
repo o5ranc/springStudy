@@ -1,6 +1,8 @@
 INDEX VERSION 1.131
 C:\workspace\workspace_srping\.metadata\.plugins\org.eclipse.jst.jsp.core\jspsearch\3437040890.index
 \spro01_test\src\main\java
+C:\workspace\workspace_srping\.metadata\.plugins\org.eclipse.jst.jsp.core\jspsearch\3620191671.index
+\spro05\src\main\java
 C:\workspace\workspace_srping\.metadata\.plugins\org.eclipse.jst.jsp.core\jspsearch\3178133098.index
 \ex00\src\main\java
 C:\workspace\workspace_srping\.metadata\.plugins\org.eclipse.jst.jsp.core\jspsearch\3642774886.index

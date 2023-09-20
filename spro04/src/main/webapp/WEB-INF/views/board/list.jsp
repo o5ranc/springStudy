@@ -100,7 +100,8 @@ ALTER TABLE reply ADD CONSTRAINT fk_reply_board FOREIGN KEY(bno) REFERENCES boar
 							<tr>
 								<td><c:out value="${board.bno }"></c:out></td>
 								<td><a href="/board/get?bno=${board.bno }"> <c:out
-											value="${board.title }"></c:out></a></td>
+											value="${board.title }"/>
+									<b>[${board.replyCnt}]</b></a></td>
 								<td><c:out value="${board.writer }"></c:out></td>
 								<td class="center"><fmt:formatDate
 										value="${board.regDate }" pattern="yyyy-MM-dd" /></td>

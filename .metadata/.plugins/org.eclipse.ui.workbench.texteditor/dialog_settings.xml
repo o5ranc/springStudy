@@ -1,28 +1,28 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <section name="Workbench">
 	<section name="org.eclipse.ui.texteditor.FindReplaceDialog">
-		<item key="selection" value="replyService"/>
+		<item key="selection" value="updateReplyCnt"/>
 		<item key="wrap" value="true"/>
 		<item key="casesensitive" value="false"/>
 		<item key="wholeword" value="false"/>
 		<item key="incremental" value="false"/>
 		<item key="isRegEx" value="false"/>
 		<list key="findhistory">
-			<item value="replyService"/>
-			<item value="showList"/>
-			<item value="myModalLabel"/>
-			<item value="댓글추가"/>
-			<item value="$(document).ready("/>
-			<item value="modal"/>
-			<item value="myModal"/>
-			<item value="&lt;!-- modal"/>
-			<item value="getHour"/>
-			<item value="getHour "/>
-			<item value="displayTime"/>
-			<item value="get:get"/>
-			<item value="css/"/>
-			<item value="css"/>
-			<item value="chat"/>
+			<item value="updateReplyCnt"/>
+			<item value="foreach"/>
+			<item value="Paging"/>
+			<item value="mapper"/>
+			<item value="mybatis"/>
+			<item value="ojdbc8"/>
+			<item value="&lt;build"/>
+			<item value="transactionManager"/>
+			<item value="dataSource"/>
+			<item value="-tx"/>
+			<item value="srping-tx"/>
+			<item value="ojdbc"/>
+			<item value="ojdbc "/>
+			<item value="&lt;!-- Logging --&gt;"/>
+			<item value="log4j"/>
 		</list>
 		<list key="replacehistory">
 		</list>
