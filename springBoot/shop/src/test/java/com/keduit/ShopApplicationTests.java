@@ -2,6 +2,8 @@ package com.keduit;
 
 import com.keduit.constant.ItemSellStatus;
 import com.keduit.repository.ItemRepository;
+import com.querydsl.core.BooleanBuilder;
+import com.querydsl.jpa.impl.JPAQueryFactory;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import com.keduit.entity.Item;
@@ -13,6 +15,8 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 import org.springframework.test.context.TestPropertySource;
 import org.springframework.transaction.annotation.Transactional;
+import com.keduit.entity.QItem;
+import org.thymeleaf.util.StringUtils;
 
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
@@ -30,6 +34,54 @@ class ShopApplicationTests {
 	@PersistenceContext
 	EntityManager em;
 
+	@Test
+	@DisplayName("QueryDsl 테스트")
+	public void queryDslTest() {
+		this.createItemList();
+		JPAQueryFactory queryFactory = new JPAQueryFactory(em);
+		QItem qItem = QItem.item;
+		List<Item> list = queryFactory
+				.select(qItem)
+				.from(qItem)
+				.where(qItem.itemSellStatus.eq(ItemSellStatus.SELL))
+				.where(qItem.itemDetail.like("%" + "상세정보" + "%"))
+				.orderBy(qItem.price.desc())
+				.fetch();
+		for(Item item : list) {
+			System.out.println("item = " + item);
+		}
+	}
+
+	@Test
+	@DisplayName("QueryDsl2 테스트2")
+	public void queryDslTest2() {
+		this.createItemList();
+
+		BooleanBuilder builder = new BooleanBuilder();
+		QItem item = QItem.item;
+
+		// where 절에서 쓰기 위해 미리 만든 것
+		String itemDetail = "상세정보임1";
+		int price = 49000;
+		String itemSellStat = "SELL";
+
+		builder.and(item.itemDetail.like("%" + itemDetail + "%"));
+		builder.and(item.price.gt(price));
+
+		if(StringUtils.equals(itemSellStat, ItemSellStatus.SELL)) {
+			builder.and(item.itemSellStatus.eq(ItemSellStatus.SELL));
+		}
+
+		Pageable pageable = PageRequest.of(0, 5);
+		Page<Item> result = itemRepository.findAll(builder, pageable);
+
+		System.out.println("전체 페이지 수 = " + result.getTotalPages());
+		System.out.println("조회한 전체 상품수 = " + result.getTotalElements());
+		System.out.println("현재 페이지의 게시물 수 = " + result.getSize());
+		System.out.println("현재 페이지 번호 = " + result.getNumber());
+		System.out.println("content = " + result.getContent());
+
+	}
 
 	@Test
 	@DisplayName("상품 저장 테스트")
@@ -70,6 +122,7 @@ class ShopApplicationTests {
 				item.setItemSellStatus(ItemSellStatus.SOLD_OUT);
 				item.setStockNumber(0);
 			}
+
 			item.setRegTime(LocalDateTime.now());
 			item.setUpdateTime(LocalDateTime.now());
 
@@ -77,6 +130,8 @@ class ShopApplicationTests {
 		}
 	}
 	
+
+
 	@Test
 	public void findByItemNmItemDetailTest() {
 		this.createItemList();
