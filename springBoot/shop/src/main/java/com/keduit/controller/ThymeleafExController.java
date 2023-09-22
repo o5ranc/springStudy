@@ -38,6 +38,7 @@ public class ThymeleafExController {
         for(int i  = 0;i < 10; i++) {
             ItemDTO itemDto = new ItemDTO();
             itemDto.setItemDetail("상품 상세 설명" + i);
+            itemDto.setItemNm("테스트 상품" + i);
             itemDto.setPrice(50000 + i);
             itemDto.setRegTime(LocalDateTime.now());
 
@@ -46,5 +47,35 @@ public class ThymeleafExController {
 
         model.addAttribute("itemDtoList", itemDtoList);
         return "thymeleafEx/thymeleafEx03";
+    }
+
+    @GetMapping("/ex04")
+    public String thymeleafExample04(Model model) {
+        List<ItemDTO> itemDtoList = new ArrayList<>();
+
+        for(int i  = 0;i < 10; i++) {
+            ItemDTO itemDto = new ItemDTO();
+            itemDto.setItemDetail("상품 상세 설명" + i);
+            itemDto.setItemNm("테스트 상품" + i);
+            itemDto.setPrice(50000 + i);
+            itemDto.setRegTime(LocalDateTime.now());
+
+            itemDtoList.add(itemDto);
+        }
+
+        model.addAttribute("itemDtoList", itemDtoList);
+        return "thymeleafEx/thymeleafEx04";
+    }
+
+    @GetMapping("/ex05")
+    public String thymeleafEx05() {
+        return "thymeleafEx/thymeleafEx05";
+    }
+
+    @GetMapping("/ex06")
+    public String thymeleafEx06(String param1, String param2, Model model) {
+        model.addAttribute("param1", param1);
+        model.addAttribute("param2", param2);
+        return "thymeleafEx/thymeleafEx06";
     }
 }
