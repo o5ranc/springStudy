@@ -5,6 +5,7 @@ import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import java.time.LocalDateTime;
 import java.util.ArrayList;
@@ -37,6 +38,7 @@ public class ThymeleafExController {
 
         for(int i  = 0;i < 10; i++) {
             ItemDTO itemDto = new ItemDTO();
+            itemDto.setId((long)i);
             itemDto.setItemDetail("상품 상세 설명" + i);
             itemDto.setItemNm("테스트 상품" + i);
             itemDto.setPrice(50000 + i);
@@ -77,5 +79,33 @@ public class ThymeleafExController {
         model.addAttribute("param1", param1);
         model.addAttribute("param2", param2);
         return "thymeleafEx/thymeleafEx06";
+    }
+
+    @GetMapping("/ex07")
+    public String thymeleafEx07() {
+        return "thymeleafEx/thymeleafEx07";
+    }
+
+    @GetMapping("/exInline")
+    public String exInline(RedirectAttributes redirectAttributes) {
+        System.out.println(".....exinline.....");
+
+        ItemDTO itemDto = new ItemDTO();
+        itemDto.setItemDetail("상품 상세 설명");
+        itemDto.setItemNm("테스트 상품1");
+        itemDto.setPrice(10000);
+        itemDto.setRegTime(LocalDateTime.now());
+
+
+        redirectAttributes.addFlashAttribute("result", "sucess");
+        redirectAttributes.addFlashAttribute("dto", itemDto);
+
+        return "redirect:/thymeleaf/ex08";
+    }
+
+    @GetMapping("/ex08")
+    public String ex08() {
+        System.out.println("ex08");
+        return "thymeleafEx/thymeleafEx08";
     }
 }

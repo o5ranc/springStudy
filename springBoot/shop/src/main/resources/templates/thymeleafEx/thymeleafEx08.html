@@ -1,0 +1,24 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+</head>
+<body>
+<h1>링크 처리 예제</h1>
+
+<div>
+  <span th:text="${result}"></span>
+</div>
+<div>
+  <span th:text="${dto}"></span>
+</div>
+
+<script th:inline="javascript">
+  const msg = [[${result}]];
+  const dto = [[${dto}]];
+  console.log(dto)
+</script>
+
+</body>
+</html>
