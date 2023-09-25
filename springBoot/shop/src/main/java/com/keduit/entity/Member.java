@@ -36,6 +36,7 @@ public class Member {
         member.setName(memberFormDTO.getName());
         member.setEmail(memberFormDTO.getEmail());
         member.setAddress(memberFormDTO.getAddress());
+        member.setRole(Role.USER); // 기본 사용자로
         // 비밀번호를 암호화한 값을 저장
         String password = passwordEncoder.encode(memberFormDTO.getPassword());
         member.setPassword(password);
