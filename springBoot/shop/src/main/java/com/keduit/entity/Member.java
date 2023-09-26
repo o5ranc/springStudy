@@ -18,7 +18,7 @@ public class Member {
 
     @Id
     @Column(name="member_id")
-    @GeneratedValue(strategy = GenerationType.AUTO)
+    @GeneratedValue(strategy = GenerationType.IDENTITY) // GenerationType.AUTO
     private Long id;
 
     private String name;
@@ -30,16 +30,16 @@ public class Member {
     @Enumerated(EnumType.STRING) // 순서 변경되면 문제발생하므로, EnumType.STRING 권장
     private Role role;
 
-    public static Member CreateMember(MemberFormDTO memberFormDTO,
+    public static Member createMember(MemberFormDTO memberFormDTO,
                                       PasswordEncoder passwordEncoder) {
         Member member = new Member();
         member.setName(memberFormDTO.getName());
         member.setEmail(memberFormDTO.getEmail());
         member.setAddress(memberFormDTO.getAddress());
-        member.setRole(Role.USER); // 기본 사용자로
         // 비밀번호를 암호화한 값을 저장
         String password = passwordEncoder.encode(memberFormDTO.getPassword());
         member.setPassword(password);
+		member.setRole(Role.ADMIN);
         return member;
     }
 }

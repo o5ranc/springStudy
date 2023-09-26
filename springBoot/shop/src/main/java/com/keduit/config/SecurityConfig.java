@@ -9,6 +9,7 @@ import org.springframework.security.config.annotation.web.configuration.WebSecur
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.SecurityFilterChain;
+import org.springframework.security.web.util.matcher.AntPathRequestMatcher;
 
 @Configuration
 @EnableWebSecurity
@@ -17,6 +18,27 @@ public class SecurityConfig {
     @Bean
     public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
         // 2.6이상 방법(2.5 이전 방법과 다름)
+
+        http.formLogin()
+                .loginPage("/members/login")
+                .defaultSuccessUrl("/")
+                .usernameParameter("email")
+                .failureUrl("/members/login/error")
+                .and()
+                .logout()
+                .logoutRequestMatcher(new AntPathRequestMatcher("/members/logout"))
+                .logoutSuccessUrl("/");
+
+      
+        http.authorizeRequests()
+                .mvcMatchers("/", "/members/**", "/item/**", "/images/**").permitAll() // 모든 사용자가 인증없이 접근 가능하게
+                .mvcMatchers("/admin/**").hasRole("ADMIN") // 관리자만 접근 가능한 경로 설정
+                .anyRequest().authenticated(); // 그 외에는 인증된 사람만 접근가능하도록
+
+        // 미인증 사용자에 대해 exception 발생해서 던지도록 추가
+        http.exceptionHandling()
+                .authenticationEntryPoint(new CustomAuthenticationEntryPoint());
+
         return http.build();
     }
 

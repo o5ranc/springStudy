@@ -42,6 +42,11 @@ public class ThymeleafExController {
             itemDto.setItemDetail("상품 상세 설명" + i);
             itemDto.setItemNm("테스트 상품" + i);
             itemDto.setPrice(50000 + i);
+            if(i<11){
+                itemDto.setSellStatCd("SELL");
+            }else {
+                itemDto.setSellStatCd("SOLD_OUT");
+            }
             itemDto.setRegTime(LocalDateTime.now());
 
             itemDtoList.add(itemDto);
@@ -60,8 +65,14 @@ public class ThymeleafExController {
             itemDto.setItemDetail("상품 상세 설명" + i);
             itemDto.setItemNm("테스트 상품" + i);
             itemDto.setPrice(50000 + i);
-            itemDto.setRegTime(LocalDateTime.now());
 
+            if(i<11){
+                itemDto.setSellStatCd("SELL");
+            }else {
+                itemDto.setSellStatCd("SOLD_OUT");
+            }
+
+            itemDto.setRegTime(LocalDateTime.now());
             itemDtoList.add(itemDto);
         }
 
