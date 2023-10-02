@@ -91,7 +91,12 @@
             <groupId>org.thymeleaf.extras</groupId>
             <artifactId>thymeleaf-extras-springsecurity5</artifactId>
         </dependency>
-
+        <!-- https://mvnrepository.com/artifact/org.modelmapper/modelmapper -->
+        <dependency>
+            <groupId>org.modelmapper</groupId>
+            <artifactId>modelmapper</artifactId>
+            <version>3.1.1</version> <!-- 버젼 삭제시 오류 나서 살려둠 -->
+        </dependency>
     </dependencies>
 
 	<build>
@@ -124,6 +129,8 @@
 					</execution>
 				</executions>
 			</plugin>
+
+
 		</plugins>
 	</build>
 
