@@ -42,5 +42,5 @@ public class ItemImgService {
 
     public void updateItemImg(Long itemImgId, MultipartFile itemImgFile) {
 
-    }a sw
+    }
 }
