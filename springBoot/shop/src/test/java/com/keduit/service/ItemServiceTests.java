@@ -15,7 +15,7 @@ import org.springframework.security.test.context.support.WithMockUser;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
 
-import javax.persistence.EntityExistsException;
+import javax.persistence.EntityNotFoundException;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -23,7 +23,7 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 
 @SpringBootTest
 @Transactional
-public class ItemServiceTest {
+public class ItemServiceTests {
 
     @Autowired
     ItemService itemService;
@@ -71,7 +71,7 @@ public class ItemServiceTest {
         System.out.println("ItemImgList ==================");
         System.out.println(itemImgList);
 
-        Item item = itemRepository.findById(itemId).orElseThrow(EntityExistsException::new);
+        Item item = itemRepository.findById(itemId).orElseThrow(EntityNotFoundException::new);
         System.out.println("item ==================");
         System.out.println(item);
 

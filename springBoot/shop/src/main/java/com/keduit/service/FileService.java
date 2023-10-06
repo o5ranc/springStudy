@@ -21,6 +21,7 @@ public class FileService {
         String extention = originalFileName.substring(originalFileName.lastIndexOf("."));
         String savedFileName = uuid.toString() + extention; // 파일 업로드시 중복이름 방지를 위해, uuid로 파일명 생성
         String fileUploadFullUrl = uploadPath + "/" + savedFileName;
+        System.out.println(">>>file<<<" + fileUploadFullUrl );
         FileOutputStream fos = new FileOutputStream(fileUploadFullUrl);
         fos.write(fileData);
         fos.close();

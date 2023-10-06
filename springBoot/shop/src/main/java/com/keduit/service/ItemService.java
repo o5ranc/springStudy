@@ -2,11 +2,16 @@ package com.keduit.service;
 
 import com.keduit.dto.ItemFormDTO;
 import com.keduit.dto.ItemImgDTO;
+import com.keduit.dto.ItemSearchDTO;
+import com.keduit.dto.MainItemDTO;
 import com.keduit.entity.Item;
 import com.keduit.entity.ItemImg;
 import com.keduit.repository.ItemImgRepository;
 import com.keduit.repository.ItemRepository;
+import com.keduit.repository.ItemRepositoryCustomImpl;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
@@ -34,9 +39,9 @@ public class ItemService {
             itemImg.setItem(item);
 
             if(i == 0) {
-                itemImg.setRepimgYn("Y");
+                itemImg.setRepImgYn("Y");
             } else {
-                itemImg.setRepimgYn("N");
+                itemImg.setRepImgYn("N");
             }
 
             itemImgService.saveItemImg(itemImg, itemImgFileList.get(i));
@@ -61,4 +66,28 @@ public class ItemService {
         itemFormDTO.setItemImgDTOList(itemImgDTOList);
         return itemFormDTO;
     }
+
+    public Long updateItem(ItemFormDTO itemFormDto, List<MultipartFile> itemImgFileList) throws Exception {
+        Item item = itemRepository.findById(itemFormDto.getId()).orElseThrow(EntityNotFoundException::new);
+        item.updateItem(itemFormDto);
+        List<Long> itemImgIds = itemFormDto.getItemImgIds();
+
+        for(int i =0; i < itemImgFileList.size(); i++){
+            itemImgService.updateItemImg(itemImgIds.get(i),
+                    itemImgFileList.get(i));
+        }
+        return item.getId();
+    }
+
+
+    @Transactional(readOnly = true)
+    public Page<Item> getAdminItemPage(ItemSearchDTO itemSearchDTO, Pageable pageable){
+        return itemRepository.getAdminItemPage(itemSearchDTO, pageable);
+    }
+
+    @Transactional(readOnly = true)
+    public Page<MainItemDTO> getMainItemPage(ItemSearchDTO itemSearchDTO, Pageable pageable){
+        return itemRepository.getMainItemPage(itemSearchDTO, pageable);
+    }
+
 }

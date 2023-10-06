@@ -36,8 +36,10 @@ public class Member extends BaseEntity {
         member.setName(memberFormDTO.getName());
         member.setEmail(memberFormDTO.getEmail());
         member.setAddress(memberFormDTO.getAddress());
+		System.out.println("memberFormDTO.password = " + memberFormDTO.getPassword());
         // 비밀번호를 암호화한 값을 저장
         String password = passwordEncoder.encode(memberFormDTO.getPassword());
+		System.out.println("password = " + password);
         member.setPassword(password);
 		member.setRole(Role.ADMIN);
         return member;

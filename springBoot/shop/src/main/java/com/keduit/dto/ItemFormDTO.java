@@ -26,10 +26,10 @@ public class ItemFormDTO {
     @NotNull(message = "가격은 필수 입력 값입니다.")
     private Integer price;
 
-    @NotBlank(message = "이름은 필수 입력 값입니다.")
+    @NotBlank(message = "상세설명은 필수 입력 값입니다.")
     private String itemDetail;
 
-    @NotNull(message = "재고는 필수 입력 값입니다.")
+    @NotNull(message = "재고는 필수 입력 값입니다.") //보통은 직접 입력은 안하고 구매 재고에서 끌고 옴
     private Integer stockNumber;
     private ItemSellStatus itemSellStatus;
     private List<ItemImgDTO> itemImgDTOList = new ArrayList<>();
