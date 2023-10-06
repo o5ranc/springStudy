@@ -1,14 +1,45 @@
 <!DOCTYPE html>
-
-<html lang="en"
-      xmlns:th="http://www.thymeleaf.org"
-      xmlns:layout = http://www.ultraq.net.nz/thymeleaf/layout
+<html xmlns:th="http://www.thymeleaf.org"
+      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
       layout:decorate="~{layouts/layout1}">
 
 <head>
   <meta name="_csrf" th:content="${_csrf.token}"/>
   <meta name="_csrf_header" th:content="${_csrf.headerName}"/>
 </head>
+
+<!-- 사용자 CSS 추가 -->
+<th:block layout:fragment="css">
+  <style>
+    .content-mg{
+      margin-left:30%;
+      margin-right:30%;
+      margin-top:2%;
+      margin-bottom:100px;
+    }
+    .repImgDiv{
+      margin-right:15px;
+      margin-left:15px;
+      height:auto;
+    }
+    .repImg{
+      height:100px;
+      width:100px;
+    }
+    .card{
+      width:750px;
+      height:100%;
+      padding:30px;
+      margin-bottom:20px;
+    }
+    .fs18{
+      font-size:18px
+    }
+    .fs24{
+      font-size:24px
+    }
+  </style>
+</th:block>
 
 <th:block layout:fragment="script">
   <script th:inline="javascript">
@@ -34,7 +65,7 @@
         dataType : "json",
         cache : false,
         success : function (result, status) {
-          alter("주문이 취소되었습니다.");
+          alert("주문이 취소되었습니다.");
           local.href="/orders/" + [[${page}]];
         },
         error : function (jqXHR, status, error) {
