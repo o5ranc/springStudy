@@ -27,7 +27,9 @@ public class WebSecurityConfig {
                 .httpBasic().disable()
                 .sessionManagement().sessionCreationPolicy(SessionCreationPolicy.STATELESS)
                 .and()
-                .authorizeRequests().antMatchers("/", "/auth/**").permitAll()
+                .authorizeRequests().antMatchers("/", "/auth/**",
+                        "/swagger-ui/**", "/swagger/**",
+                        "/swagger-resources/**", "/v3/api-docs").permitAll()
                 .anyRequest().authenticated();
 
         http.addFilterAfter(jwtAuthenticationFilter, CorsFilter.class);
