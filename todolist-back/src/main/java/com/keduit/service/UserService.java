@@ -32,7 +32,9 @@ public class UserService {
             final String username,
             final String password,
             final PasswordEncoder encoder ) {
-        final UserEntity oriUser = userRepository.findByUsernameAndPassword(username, password);
+        System.out.println("getByCredentials username : " + username + ", password : " + password);
+        final UserEntity oriUser = userRepository.findByUsername(username);
+        System.out.println("getByCredentials oriUser : " + oriUser.getUsername() + ", password : " +  oriUser.getPassword());
 
         if(oriUser != null && encoder.matches(password, oriUser.getPassword())) {
             return oriUser;
