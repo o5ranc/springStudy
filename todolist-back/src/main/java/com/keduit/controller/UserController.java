@@ -4,6 +4,7 @@ import com.keduit.dto.ResponseDTO;
 import com.keduit.dto.TodoDTO;
 import com.keduit.dto.UserDTO;
 import com.keduit.model.UserEntity;
+import com.keduit.security.TokenProvidor;
 import com.keduit.service.UserService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -16,6 +17,9 @@ public class UserController {
 
     @Autowired
     private UserService userService;
+
+    @Autowired
+    private TokenProvidor tokenProvidor;
 
     @PostMapping("/signup")
     public ResponseEntity<?> registerUser(@RequestBody UserDTO userDTO) {
@@ -51,9 +55,12 @@ public class UserController {
         UserEntity user = userService.getByCredentials(
                 userDTO.getUsername(), userDTO.getPassword());
 
-        if(user != null) {
+        if(user != null) { // user가 존재
+            final String token = tokenProvidor.create(user);
+
             final UserDTO resposeUserDTO = UserDTO.builder()
                     .username(user.getUsername())
+                    .token(token)
                     .id(user.getId())
                     .build();
             return ResponseEntity.ok().body(resposeUserDTO);
