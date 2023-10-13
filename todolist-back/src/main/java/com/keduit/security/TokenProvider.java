@@ -11,7 +11,7 @@ import java.time.temporal.ChronoUnit;
 import java.util.Date;
 
 @Service
-public class TokenProvidor {
+public class TokenProvider {
     // 임의 생성 KEY 이며 복잡할수록 보안은 강화
     private static final String SECRET_KEY = "FlRpX30pMqDbiAkmlfArbrmVkDD4RqISskGZmBFax5oGVxzXXWUzTR5JyskiHMIV9M1Oicegkpi46AdvrcX1E6CmTUBc6IFbTPiD";
 

@@ -1,12 +1,10 @@
 package com.keduit.controller;
 
 import com.keduit.dto.ResponseDTO;
-import com.keduit.dto.TodoDTO;
 import com.keduit.dto.UserDTO;
 import com.keduit.model.UserEntity;
-import com.keduit.security.TokenProvidor;
+import com.keduit.security.TokenProvider;
 import com.keduit.service.UserService;
-import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -19,7 +17,7 @@ public class UserController {
     private UserService userService;
 
     @Autowired
-    private TokenProvidor tokenProvidor;
+    private TokenProvider tokenProvidor;
 
     @PostMapping("/signup")
     public ResponseEntity<?> registerUser(@RequestBody UserDTO userDTO) {
